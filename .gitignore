@@ -1,0 +1,9 @@
+# Ignore Unity temp/IDE files
+[Ll]ibrary/
+[Tt]emp/
+[Bb]uild/
+obj/
+.vscode/
+*.user
+*.csproj
+*.sln
