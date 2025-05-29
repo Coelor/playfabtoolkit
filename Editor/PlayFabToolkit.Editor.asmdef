@@ -1,0 +1,11 @@
+{
+  "name": "PlayFabToolkit.Editor",
+  "rootNamespace": "PlayFabToolkit.Editor",
+  "references": [
+    "PlayFabToolkit"
+  ],
+  "includePlatforms": [ "Editor" ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

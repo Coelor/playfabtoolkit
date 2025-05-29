@@ -1,0 +1,30 @@
+{
+  "name": "com.coelor.playfabtoolkit",
+  "displayName": "PlayFab Toolkit",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Headless PlayFab helper services (Auth, File upload, etc.)",
+  "keywords": [
+    "PlayFab",
+    "backend",
+    "authentication",
+    "logging"
+  ],
+  "author": {
+    "name": "Gary Brenden (Coelor)",
+    "url": "https://github.com/yourcompany/playfabtoolkit"
+  },
+  "samples": [
+    {
+      "displayName": "Transform Logger Demo",
+      "description": "Shows how to upload transform logs via the toolkit.",
+      "path": "Samples~/TransformLogger Sample"
+    }
+  ],
+  "licenses": [
+    {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  ]
+}
