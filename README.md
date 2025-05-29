@@ -60,32 +60,82 @@ Unity will compile the `PlayFabToolkit` assembly and list the package under **In
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start
+
+### Option A: Using ToolkitBootstrap (Recommended)
+
+1. **Add the Bootstrap Component**
+   - Create an empty GameObject in your startup scene
+   - Add the `ToolkitBootstrap` component
+   - Set your **PlayFab Title ID** in the inspector
+   - The toolkit will auto-initialize when the scene loads
+
+2. **Use the Services**
+```csharp
+using PlayFabToolkit.Services;
+using UnityEngine;
+
+public class LoginManager : MonoBehaviour
+{
+    public void OnLoginButtonClicked()
+    {
+        // Services are ready to use after bootstrap
+        ServiceLocator.AuthService.LoginWithEmail(
+            email: "player@example.com",
+            password: "abc123",
+            onComplete: (success, msg, displayName) =>
+            {
+                Debug.Log(success ? $"Welcome {displayName}!" : $"Login failed: {msg}");
+                
+                if (success)
+                {
+                    // After login, get entity token for file uploads
+                    ServiceLocator.AuthService.GetEntityToken(
+                        (entityId, entityType) => {
+                            if (ServiceLocator.FileUploadService is FileUploadService fileService)
+                            {
+                                fileService.SetEntity(entityId, entityType);
+                                Debug.Log("File upload service ready!");
+                            }
+                        },
+                        error => Debug.LogError($"Entity token error: {error}")
+                    );
+                }
+            });
+    }
+    
+    public void UploadSampleFile()
+    {
+        byte[] data = System.Text.Encoding.UTF8.GetBytes("Hello PlayFab");
+        ServiceLocator.FileUploadService.UploadFile(
+            data,
+            fileName: "hello.txt",
+            contentType: "text/plain",
+            callback: (ok, err) => Debug.Log(ok ? "Uploaded!" : $"Error: {err}"));
+    }
+}
+```
+
+### Option B: Manual Initialization
 
 ```csharp
-using PlayFabToolkit.Interfaces;
 using PlayFabToolkit.Services;
 
-// 1 – Init once at startup
+// Call once at application startup
 ServiceLocator.Initialize("YOUR_PLAYFAB_TITLE_ID");
 
-// 2 – Log in (e.g. UI button)
-ServiceLocator.AuthService.LoginWithEmail(
-    email: "player@example.com",
-    password: "abc123",
-    onComplete: (success, msg, displayName) =>
-    {
-        Debug.Log(msg);
-    });
-
-// 3 – Upload a file
-byte[] data = System.Text.Encoding.UTF8.GetBytes("Hello PlayFab");
-ServiceLocator.FileUploadService.UploadFile(
-    data,
-    fileName: "hello.txt",
-    contentType: "text/plain",
-    callback: (ok, err) => Debug.Log(ok ? "Uploaded" : err));
+// Then use services anywhere in your code
+ServiceLocator.AuthService.LoginWithCustomId(
+    customId: "player123",
+    onComplete: (success, msg) => Debug.Log(msg));
 ```
+
+### Important Notes
+
+- **Entity Token**: File uploads require an entity token. Call `AuthService.GetEntityToken()` after successful login and use `SetEntity()` on the file service.
+- **Initialization**: Only call `ServiceLocator.Initialize()` once. The ToolkitBootstrap handles this automatically.
+- **Scene Persistence**: The ToolkitBootstrap can persist across scenes to maintain your services.
+
 
 ---
 
